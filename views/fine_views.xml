@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <record id="view_library_fine_list" model="ir.ui.view">
+        <field name="name">library.fine.list</field>
+        <field name="model">library.fine</field>
+        <field name="arch" type="xml">
+            <list string="Phiếu phạt">
+                <field name="name"/>
+                <field name="member_id"/>
+                <field name="book_id"/>
+                <field name="reason"/>
+                <field name="overdue_days"/>
+                <field name="amount"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="view_library_fine_form" model="ir.ui.view">
+        <field name="name">library.fine.form</field>
+        <field name="model">library.fine</field>
+        <field name="arch" type="xml">
+
+            <form string="Phiếu phạt">
+
+                <header>
+
+                    <button name="action_mark_paid"
+                            type="object"
+                            string="Đánh dấu đã thanh toán"
+                            class="oe_highlight"
+                            invisible="state == 'paid'"/>
+
+                    <button name="action_mark_unpaid"
+                            type="object"
+                            string="Chuyển chưa thanh toán"
+                            invisible="state == 'unpaid'"/>
+
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="unpaid,paid"/>
+
+                </header>
+
+                <sheet>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+
+                        <group string="Thông tin phiếu phạt">
+                            <field name="loan_id"/>
+                            <field name="member_id"
+                                   readonly="1"/>
+                            <field name="book_id"
+                                   readonly="1"/>
+                            <field name="reason"/>
+                        </group>
+
+                        <group string="Thông tin tiền phạt">
+                            <field name="overdue_days"/>
+                            <field name="amount"/>
+                            <field name="state"/>
+                        </group>
+
+                    </group>
+
+                    <group string="Ghi chú">
+                        <field name="note"/>
+                    </group>
+
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <record id="view_library_fine_search" model="ir.ui.view">
+        <field name="name">library.fine.search</field>
+        <field name="model">library.fine</field>
+        <field name="arch" type="xml">
+
+            <search string="Tìm kiếm phiếu phạt">
+
+                <field name="name"/>
+                <field name="member_id"/>
+                <field name="book_id"/>
+                <field name="state"/>
+
+                <separator/>
+
+                <filter name="filter_unpaid"
+                        string="Chưa thanh toán"
+                        domain="[('state', '=', 'unpaid')]"/>
+
+                <filter name="filter_paid"
+                        string="Đã thanh toán"
+                        domain="[('state', '=', 'paid')]"/>
+
+                <separator/>
+
+                <group string="Nhóm theo">
+
+                    <filter name="group_member"
+                            string="Độc giả"
+                            context="{'group_by': 'member_id'}"/>
+
+                    <filter name="group_state"
+                            string="Trạng thái"
+                            context="{'group_by': 'state'}"/>
+
+                    <filter name="group_reason"
+                            string="Lý do"
+                            context="{'group_by': 'reason'}"/>
+
+                </group>
+
+            </search>
+
+        </field>
+    </record>
+
+
+    <record id="action_library_fine" model="ir.actions.act_window">
+        <field name="name">Phiếu phạt</field>
+        <field name="res_model">library.fine</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_library_fine_list"/>
+        <field name="search_view_id"
+               ref="view_library_fine_search"/>
+    </record>
+
+
+    <menuitem
+        id="menu_library_fine"
+        name="Phiếu phạt"
+        parent="menu_library_root"
+        action="action_library_fine"
+        sequence="40"/>
+
+</odoo>

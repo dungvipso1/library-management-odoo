@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <record id="ir_cron_library_check_overdue"
+            model="ir.cron">
+
+        <field name="name">
+            Thư viện - Kiểm tra sách quá hạn
+        </field>
+
+        <field name="model_id"
+               ref="model_library_loan"/>
+
+        <field name="state">code</field>
+
+        <field name="code">
+            model._cron_check_overdue()
+        </field>
+
+        <field name="interval_number">1</field>
+
+        <field name="interval_type">days</field>
+
+        <field name="active">True</field>
+
+    </record>
+
+</odoo>

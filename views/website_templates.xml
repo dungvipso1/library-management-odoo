@@ -1,0 +1,789 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- ===================================================== -->
+    <!-- TRANG DANH MỤC SÁCH -->
+    <!-- ===================================================== -->
+
+    <template
+        id="library_catalog"
+        name="Thư viện - Danh mục sách"
+    >
+        <t t-call="website.layout">
+
+            <div id="wrap">
+
+                <section class="py-5 bg-light">
+
+                    <div class="container">
+
+                        <!-- Thanh điều hướng -->
+                        <div class="d-flex justify-content-end mb-4">
+                            <a
+                                href="/my/loans"
+                                class="btn btn-outline-primary"
+                            >
+                                Sách tôi đang mượn
+                            </a>
+                        </div>
+
+                        <!-- Tiêu đề -->
+                        <div class="text-center mb-5">
+
+                            <h1 class="display-5 fw-bold">
+                                Thư viện
+                            </h1>
+
+                            <p class="lead text-muted">
+                                Tra cứu sách trong thư viện
+                            </p>
+
+                        </div>
+
+
+                        <!-- Tìm kiếm -->
+                        <form
+                            action="/library"
+                            method="get"
+                            class="mb-5"
+                        >
+
+                            <div class="input-group input-group-lg">
+
+                                <input
+                                    type="text"
+                                    name="q"
+                                    class="form-control"
+                                    placeholder="Tìm theo tên sách hoặc ISBN..."
+                                    t-att-value="search_query"
+                                />
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary"
+                                >
+                                    Tìm kiếm
+                                </button>
+
+                            </div>
+
+                        </form>
+
+
+                        <!-- Danh sách sách -->
+                        <div class="row g-4">
+
+                            <t t-if="books">
+
+                                <t t-foreach="books" t-as="book">
+
+                                    <div class="col-12 col-md-6 col-lg-4">
+
+                                        <div class="card h-100 shadow-sm">
+
+                                            <!-- Ảnh bìa -->
+                                            <t t-if="book.image">
+
+                                                <img
+                                                    t-att-src="'/web/image/library.book/%s/image' % book.id"
+                                                    class="card-img-top"
+                                                    style="height: 280px; object-fit: cover;"
+                                                    alt="Ảnh bìa sách"
+                                                />
+
+                                            </t>
+
+                                            <t t-else="">
+
+                                                <div
+                                                    class="d-flex align-items-center justify-content-center bg-secondary text-white"
+                                                    style="height: 280px;"
+                                                >
+                                                    Không có ảnh
+                                                </div>
+
+                                            </t>
+
+
+                                            <!-- Nội dung -->
+                                            <div class="card-body">
+
+                                                <h4 class="card-title">
+                                                    <t t-out="book.name"/>
+                                                </h4>
+
+                                                <p class="mb-2">
+
+                                                    <strong>ISBN:</strong>
+
+                                                    <t
+                                                        t-out="book.isbn or 'Chưa cập nhật'"
+                                                    />
+
+                                                </p>
+
+
+                                                <p class="mb-2">
+
+                                                    <strong>Thể loại:</strong>
+
+                                                    <t
+                                                        t-out="
+                                                            book.category_id.name
+                                                            or 'Chưa phân loại'
+                                                        "
+                                                    />
+
+                                                </p>
+
+
+                                                <p class="mb-3">
+
+                                                    <strong>Số bản:</strong>
+
+                                                    <t t-out="book.quantity"/>
+
+                                                </p>
+
+
+                                                <a
+                                                    t-att-href="'/library/book/%s' % book.id"
+                                                    class="btn btn-outline-primary"
+                                                >
+                                                    Xem chi tiết
+                                                </a>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </t>
+
+                            </t>
+
+
+                            <t t-else="">
+
+                                <div class="col-12">
+
+                                    <div
+                                        class="alert alert-warning text-center"
+                                    >
+                                        Không tìm thấy sách phù hợp.
+                                    </div>
+
+                                </div>
+
+                            </t>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </t>
+    </template>
+
+
+    <!-- ===================================================== -->
+    <!-- TRANG CHI TIẾT SÁCH -->
+    <!-- ===================================================== -->
+
+    <template
+        id="library_book_detail"
+        name="Thư viện - Chi tiết sách"
+    >
+        <t t-call="website.layout">
+
+            <div id="wrap">
+
+                <section class="py-5">
+
+                    <div class="container">
+
+                        <div class="d-flex justify-content-between mb-4">
+
+                            <a
+                                href="/library"
+                                class="btn btn-outline-secondary"
+                            >
+                                ← Quay lại danh mục
+                            </a>
+
+                            <a
+                                href="/my/loans"
+                                class="btn btn-outline-primary"
+                            >
+                                Sách tôi đang mượn
+                            </a>
+
+                        </div>
+
+
+                        <!-- Thông báo -->
+                        <t t-if="reservation_message">
+
+                            <div class="alert alert-info mb-4">
+
+                                <t t-out="reservation_message"/>
+
+                            </div>
+
+                        </t>
+
+
+                        <div class="row g-5">
+
+                            <!-- Ảnh -->
+                            <div class="col-12 col-md-4">
+
+                                <t t-if="book.image">
+
+                                    <img
+                                        t-att-src="'/web/image/library.book/%s/image' % book.id"
+                                        class="img-fluid rounded shadow"
+                                        alt="Ảnh bìa sách"
+                                    />
+
+                                </t>
+
+                                <t t-else="">
+
+                                    <div
+                                        class="d-flex align-items-center justify-content-center bg-secondary text-white rounded"
+                                        style="height: 400px;"
+                                    >
+                                        Không có ảnh
+                                    </div>
+
+                                </t>
+
+                            </div>
+
+
+                            <!-- Thông tin -->
+                            <div class="col-12 col-md-8">
+
+                                <h1 class="mb-4">
+                                    <t t-out="book.name"/>
+                                </h1>
+
+
+                                <table class="table table-bordered">
+
+                                    <tbody>
+
+                                        <tr>
+
+                                            <th style="width: 35%;">
+                                                ISBN
+                                            </th>
+
+                                            <td>
+                                                <t
+                                                    t-out="
+                                                        book.isbn
+                                                        or 'Chưa cập nhật'
+                                                    "
+                                                />
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
+
+                                            <th>
+                                                Tác giả
+                                            </th>
+
+                                            <td>
+
+                                                <t t-if="book.author_ids">
+
+                                                    <t
+                                                        t-foreach="book.author_ids"
+                                                        t-as="author"
+                                                    >
+
+                                                        <span class="me-2">
+                                                            <t
+                                                                t-out="author.name"
+                                                            />
+                                                        </span>
+
+                                                    </t>
+
+                                                </t>
+
+                                                <t t-else="">
+                                                    Chưa cập nhật
+                                                </t>
+
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
+
+                                            <th>
+                                                Nhà xuất bản
+                                            </th>
+
+                                            <td>
+
+                                                <t
+                                                    t-out="
+                                                        book.publisher_id.name
+                                                        or 'Chưa cập nhật'
+                                                    "
+                                                />
+
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
+
+                                            <th>
+                                                Thể loại
+                                            </th>
+
+                                            <td>
+
+                                                <t
+                                                    t-out="
+                                                        book.category_id.name
+                                                        or 'Chưa phân loại'
+                                                    "
+                                                />
+
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
+
+                                            <th>
+                                                Năm xuất bản
+                                            </th>
+
+                                            <td>
+
+                                                <t
+                                                    t-out="
+                                                        book.publication_year
+                                                        or 'Chưa cập nhật'
+                                                    "
+                                                />
+
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
+
+                                            <th>
+                                                Tổng số bản
+                                            </th>
+
+                                            <td>
+                                                <t t-out="book.quantity"/>
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
+
+                                            <th>
+                                                Bản đang có sẵn
+                                            </th>
+
+                                            <td>
+
+                                                <span
+                                                    t-if="available_copies"
+                                                    class="badge bg-success"
+                                                >
+                                                    <t
+                                                        t-out="len(available_copies)"
+                                                    />
+                                                </span>
+
+                                                <span
+                                                    t-else=""
+                                                    class="badge bg-danger"
+                                                >
+                                                    0
+                                                </span>
+
+                                            </td>
+
+                                        </tr>
+
+                                    </tbody>
+
+                                </table>
+
+
+                                <!-- Mô tả -->
+                                <div class="mt-4">
+
+                                    <h4>
+                                        Mô tả
+                                    </h4>
+
+                                    <p class="text-muted">
+
+                                        <t
+                                            t-out="
+                                                book.description
+                                                or 'Chưa có mô tả.'
+                                            "
+                                        />
+
+                                    </p>
+
+                                </div>
+
+
+                                <!-- Đặt trước -->
+                                <div class="mt-4">
+
+                                    <t t-if="not available_copies">
+
+                                        <div class="alert alert-warning">
+
+                                            Hiện tại sách không có bản sao
+                                            sẵn có. Bạn có thể đặt trước sách.
+
+                                        </div>
+
+
+                                        <form
+                                            t-att-action="'/library/book/%s/reserve' % book.id"
+                                            method="post"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                t-att-value="request.csrf_token()"
+                                            />
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-primary btn-lg"
+                                            >
+                                                Đặt trước sách
+                                            </button>
+
+                                        </form>
+
+                                    </t>
+
+
+                                    <t t-else="">
+
+                                        <div class="alert alert-success">
+
+                                            Sách hiện đang có
+
+                                            <strong>
+                                                <t
+                                                    t-out="len(available_copies)"
+                                                />
+                                            </strong>
+
+                                            bản có sẵn.
+
+                                            Bạn có thể liên hệ thủ thư để mượn.
+
+                                        </div>
+
+                                    </t>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </t>
+    </template>
+
+
+    <!-- ===================================================== -->
+    <!-- SÁCH TÔI ĐANG MƯỢN -->
+    <!-- ===================================================== -->
+
+    <template
+        id="library_my_loans"
+        name="Thư viện - Sách tôi đang mượn"
+    >
+        <t t-call="website.layout">
+
+            <div id="wrap">
+
+                <section class="py-5 bg-light">
+
+                    <div class="container">
+
+                        <div
+                            class="d-flex justify-content-between align-items-center mb-4"
+                        >
+
+                            <div>
+
+                                <h1 class="mb-1">
+                                    Sách tôi đang mượn
+                                </h1>
+
+                                <p class="text-muted mb-0">
+                                    <t t-out="partner.name"/>
+                                </p>
+
+                            </div>
+
+
+                            <a
+                                href="/library"
+                                class="btn btn-outline-primary"
+                            >
+                                Tra cứu sách
+                            </a>
+
+                        </div>
+
+
+                        <t t-if="loans">
+
+                            <div class="table-responsive">
+
+                                <table
+                                    class="table table-bordered table-hover bg-white"
+                                >
+
+                                    <thead>
+
+                                        <tr>
+
+                                            <th>
+                                                Mã phiếu
+                                            </th>
+
+                                            <th>
+                                                Sách
+                                            </th>
+
+                                            <th>
+                                                Ngày mượn
+                                            </th>
+
+                                            <th>
+                                                Hạn trả
+                                            </th>
+
+                                            <th>
+                                                Ngày trả
+                                            </th>
+
+                                            <th>
+                                                Số lần gia hạn
+                                            </th>
+
+                                            <th>
+                                                Trạng thái
+                                            </th>
+
+                                            <th>
+                                                Phạt
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+
+
+                                    <tbody>
+
+                                        <t
+                                            t-foreach="loans"
+                                            t-as="loan"
+                                        >
+
+                                            <tr>
+
+                                                <td>
+                                                    <t t-out="loan.name"/>
+                                                </td>
+
+                                                <td>
+
+                                                    <t
+                                                        t-out="
+                                                            loan.book_id.name
+                                                            or 'Không xác định'
+                                                        "
+                                                    />
+
+                                                </td>
+
+                                                <td>
+                                                    <t
+                                                        t-out="loan.checkout_date"
+                                                    />
+                                                </td>
+
+                                                <td>
+                                                    <t
+                                                        t-out="loan.due_date"
+                                                    />
+                                                </td>
+
+                                                <td>
+
+                                                    <t
+                                                        t-if="loan.return_date"
+                                                    >
+
+                                                        <t
+                                                            t-out="loan.return_date"
+                                                        />
+
+                                                    </t>
+
+                                                    <t t-else="">
+                                                        Chưa trả
+                                                    </t>
+
+                                                </td>
+
+                                                <td>
+                                                    <t
+                                                        t-out="loan.renewal_count"
+                                                    />
+                                                </td>
+
+
+                                                <td>
+
+                                                    <span
+                                                        t-if="loan.state == 'draft'"
+                                                        class="badge bg-secondary"
+                                                    >
+                                                        Nháp
+                                                    </span>
+
+
+                                                    <span
+                                                        t-if="loan.state == 'borrowed'"
+                                                        class="badge bg-primary"
+                                                    >
+                                                        Đang mượn
+                                                    </span>
+
+
+                                                    <span
+                                                        t-if="loan.state == 'returned'"
+                                                        class="badge bg-success"
+                                                    >
+                                                        Đã trả
+                                                    </span>
+
+
+                                                    <span
+                                                        t-if="loan.state == 'overdue'"
+                                                        class="badge bg-danger"
+                                                    >
+                                                        Quá hạn
+                                                    </span>
+
+                                                </td>
+
+
+                                                <td>
+
+                                                    <t
+                                                        t-if="loan.fine_ids"
+                                                    >
+
+                                                        <t
+                                                            t-set="total_fine"
+                                                            t-value="sum(loan.fine_ids.mapped('amount'))"
+                                                        />
+
+                                                        <span
+                                                            t-if="total_fine > 0"
+                                                            class="text-danger fw-bold"
+                                                        >
+                                                            <t
+                                                                t-out="total_fine"
+                                                            />
+                                                            đ
+                                                        </span>
+
+                                                        <t
+                                                            t-else=""
+                                                        >
+                                                            Không có
+                                                        </t>
+
+                                                    </t>
+
+                                                    <t t-else="">
+                                                        Không có
+                                                    </t>
+
+                                                </td>
+
+                                            </tr>
+
+                                        </t>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </t>
+
+
+                        <t t-else="">
+
+                            <div class="alert alert-info">
+
+                                Hiện tại bạn chưa có phiếu mượn sách.
+
+                            </div>
+
+                        </t>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </t>
+    </template>
+
+</odoo>

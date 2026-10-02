@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- ====================================================== -->
+    <!-- DANH SÁCH SÁCH -->
+    <!-- ====================================================== -->
+
+    <record id="view_library_book_list" model="ir.ui.view">
+        <field name="name">library.book.list</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+            <list string="Danh sách sách">
+                <field name="name"/>
+                <field name="isbn"/>
+                <field name="author_ids" widget="many2many_tags"/>
+                <field name="publisher_id"/>
+                <field name="category_id"/>
+                <field name="publication_year"/>
+                <field name="quantity"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- ====================================================== -->
+    <!-- TÌM KIẾM SÁCH -->
+    <!-- ====================================================== -->
+
+    <record id="view_library_book_search" model="ir.ui.view">
+        <field name="name">library.book.search</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+            <search string="Tìm kiếm sách">
+
+                <field name="name"/>
+                <field name="isbn"/>
+                <field name="author_ids"/>
+                <field name="publisher_id"/>
+                <field name="category_id"/>
+
+                <separator/>
+
+                <filter
+                    name="filter_has_category"
+                    string="Có thể loại"
+                    domain="[('category_id', '!=', False)]"
+                />
+
+                <filter
+                    name="filter_has_publisher"
+                    string="Có nhà xuất bản"
+                    domain="[('publisher_id', '!=', False)]"
+                />
+
+                <separator/>
+
+                <group string="Nhóm theo">
+
+                    <filter
+                        name="group_by_category"
+                        string="Thể loại"
+                        context="{'group_by': 'category_id'}"
+                    />
+
+                    <filter
+                        name="group_by_publisher"
+                        string="Nhà xuất bản"
+                        context="{'group_by': 'publisher_id'}"
+                    />
+
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+
+    <!-- ====================================================== -->
+    <!-- FORM SÁCH -->
+    <!-- ====================================================== -->
+
+    <record id="view_library_book_form" model="ir.ui.view">
+        <field name="name">library.book.form</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+
+            <form string="Thông tin sách">
+
+                <sheet>
+
+                    <group>
+
+                        <group>
+                            <field name="name"/>
+                            <field name="isbn"/>
+
+                            <field
+                                name="author_ids"
+                                widget="many2many_tags"
+                            />
+
+                            <field name="publisher_id"/>
+                            <field name="category_id"/>
+                        </group>
+
+                        <group>
+                            <field name="publication_year"/>
+                            <field name="quantity"/>
+
+                            <field
+                                name="image"
+                                widget="image"
+                                class="oe_avatar"
+                            />
+                        </group>
+
+                    </group>
+
+
+                    <group>
+                        <field name="description"/>
+                    </group>
+
+
+                    <!-- ================================================== -->
+                    <!-- BẢN SAO SÁCH -->
+                    <!-- ================================================== -->
+
+                    <notebook>
+
+                        <page string="Bản sao sách">
+
+                            <field name="copy_ids">
+
+                                <list editable="bottom">
+                                    <field name="barcode"/>
+                                    <field name="state"/>
+                                </list>
+
+                            </field>
+
+                        </page>
+
+                    </notebook>
+
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <!-- ====================================================== -->
+    <!-- ACTION SÁCH -->
+    <!-- ====================================================== -->
+
+    <record id="action_library_book" model="ir.actions.act_window">
+        <field name="name">Sách</field>
+        <field name="res_model">library.book</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_library_book_search"/>
+    </record>
+
+
+    <!-- ====================================================== -->
+    <!-- MENU CHÍNH -->
+    <!-- ====================================================== -->
+
+    <menuitem
+        id="menu_library_root"
+        name="Thư viện"
+        sequence="10"
+    />
+
+
+    <!-- ====================================================== -->
+    <!-- MENU SÁCH -->
+    <!-- ====================================================== -->
+
+    <menuitem
+        id="menu_library_book"
+        name="Sách"
+        parent="menu_library_root"
+        action="action_library_book"
+        sequence="10"
+    />
+
+
+    <!-- ====================================================== -->
+    <!-- TÁC GIẢ -->
+    <!-- ====================================================== -->
+
+    <record id="view_library_author_list" model="ir.ui.view">
+        <field name="name">library.author.list</field>
+        <field name="model">library.author</field>
+        <field name="arch" type="xml">
+
+            <list string="Danh sách tác giả">
+                <field name="name"/>
+                <field name="description"/>
+            </list>
+
+        </field>
+    </record>
+
+
+    <record id="view_library_author_form" model="ir.ui.view">
+        <field name="name">library.author.form</field>
+        <field name="model">library.author</field>
+        <field name="arch" type="xml">
+
+            <form string="Thông tin tác giả">
+
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <record id="action_library_author" model="ir.actions.act_window">
+        <field name="name">Tác giả</field>
+        <field name="res_model">library.author</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+    <menuitem
+        id="menu_library_author"
+        name="Tác giả"
+        parent="menu_library_root"
+        action="action_library_author"
+        sequence="20"
+    />
+
+
+    <!-- ====================================================== -->
+    <!-- NHÀ XUẤT BẢN -->
+    <!-- ====================================================== -->
+
+    <record id="view_library_publisher_list" model="ir.ui.view">
+        <field name="name">library.publisher.list</field>
+        <field name="model">library.publisher</field>
+        <field name="arch" type="xml">
+
+            <list string="Danh sách nhà xuất bản">
+                <field name="name"/>
+                <field name="description"/>
+            </list>
+
+        </field>
+    </record>
+
+
+    <record id="view_library_publisher_form" model="ir.ui.view">
+        <field name="name">library.publisher.form</field>
+        <field name="model">library.publisher</field>
+        <field name="arch" type="xml">
+
+            <form string="Thông tin nhà xuất bản">
+
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <record id="action_library_publisher" model="ir.actions.act_window">
+        <field name="name">Nhà xuất bản</field>
+        <field name="res_model">library.publisher</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+    <menuitem
+        id="menu_library_publisher"
+        name="Nhà xuất bản"
+        parent="menu_library_root"
+        action="action_library_publisher"
+        sequence="30"
+    />
+
+
+    <!-- ====================================================== -->
+    <!-- THỂ LOẠI -->
+    <!-- ====================================================== -->
+
+    <record id="view_library_category_list" model="ir.ui.view">
+        <field name="name">library.category.list</field>
+        <field name="model">library.category</field>
+        <field name="arch" type="xml">
+
+            <list string="Danh sách thể loại">
+                <field name="name"/>
+                <field name="description"/>
+            </list>
+
+        </field>
+    </record>
+
+
+    <record id="view_library_category_form" model="ir.ui.view">
+        <field name="name">library.category.form</field>
+        <field name="model">library.category</field>
+        <field name="arch" type="xml">
+
+            <form string="Thông tin thể loại">
+
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <record id="action_library_category" model="ir.actions.act_window">
+        <field name="name">Thể loại</field>
+        <field name="res_model">library.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+    <menuitem
+        id="menu_library_category"
+        name="Thể loại"
+        parent="menu_library_root"
+        action="action_library_category"
+        sequence="40"
+    />
+
+
+    <!-- ====================================================== -->
+    <!-- BẢN SAO SÁCH -->
+    <!-- ====================================================== -->
+
+    <record id="view_library_book_copy_list" model="ir.ui.view">
+        <field name="name">library.book.copy.list</field>
+        <field name="model">library.book.copy</field>
+        <field name="arch" type="xml">
+
+            <list string="Danh sách bản sao sách">
+                <field name="book_id"/>
+                <field name="barcode"/>
+                <field name="state"/>
+            </list>
+
+        </field>
+    </record>
+
+
+    <!-- ====================================================== -->
+    <!-- TÌM KIẾM BẢN SAO SÁCH -->
+    <!-- ====================================================== -->
+
+    <record id="view_library_book_copy_search" model="ir.ui.view">
+        <field name="name">library.book.copy.search</field>
+        <field name="model">library.book.copy</field>
+        <field name="arch" type="xml">
+
+            <search string="Tìm kiếm bản sao sách">
+
+                <!-- Tìm theo tên hiển thị -->
+                <!-- Được xử lý bởi _search_display_name trong copy.py -->
+                <field
+                    name="display_name"
+                    string="Tìm kiếm"
+                />
+
+                <!-- Tìm riêng theo sách -->
+                <field
+                    name="book_id"
+                    string="Sách"
+                />
+
+                <!-- Tìm riêng theo mã bản sao -->
+                <field
+                    name="barcode"
+                    string="Mã bản sao"
+                />
+
+                <!-- Tìm riêng theo trạng thái -->
+                <field
+                    name="state"
+                    string="Trạng thái"
+                />
+
+                <separator/>
+
+                <!-- ================================================== -->
+                <!-- LỌC NHANH -->
+                <!-- ================================================== -->
+
+                <filter
+                    name="filter_available"
+                    string="Có sẵn"
+                    domain="[('state', '=', 'available')]"
+                />
+
+                <filter
+                    name="filter_borrowed"
+                    string="Đang mượn"
+                    domain="[('state', '=', 'borrowed')]"
+                />
+
+                <filter
+                    name="filter_lost"
+                    string="Mất"
+                    domain="[('state', '=', 'lost')]"
+                />
+
+                <separator/>
+
+                <!-- ================================================== -->
+                <!-- NHÓM THEO -->
+                <!-- ================================================== -->
+
+                <group string="Nhóm theo">
+
+                    <filter
+                        name="group_by_book"
+                        string="Sách"
+                        context="{'group_by': 'book_id'}"
+                    />
+
+                    <filter
+                        name="group_by_state"
+                        string="Trạng thái"
+                        context="{'group_by': 'state'}"
+                    />
+
+                </group>
+
+            </search>
+
+        </field>
+    </record>
+
+
+    <!-- ====================================================== -->
+    <!-- FORM BẢN SAO SÁCH -->
+    <!-- ====================================================== -->
+
+    <record id="view_library_book_copy_form" model="ir.ui.view">
+        <field name="name">library.book.copy.form</field>
+        <field name="model">library.book.copy</field>
+        <field name="arch" type="xml">
+
+            <form string="Thông tin bản sao sách">
+
+                <sheet>
+
+                    <group>
+                        <field name="book_id"/>
+                        <field name="barcode"/>
+                        <field name="state"/>
+                    </group>
+
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <!-- ====================================================== -->
+    <!-- ACTION BẢN SAO SÁCH -->
+    <!-- ====================================================== -->
+
+    <record id="action_library_book_copy" model="ir.actions.act_window">
+        <field name="name">Bản sao sách</field>
+        <field name="res_model">library.book.copy</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_library_book_copy_search"/>
+    </record>
+
+
+    <!-- ====================================================== -->
+    <!-- MENU BẢN SAO SÁCH -->
+    <!-- ====================================================== -->
+
+    <menuitem
+        id="menu_library_book_copy"
+        name="Bản sao sách"
+        parent="menu_library_root"
+        action="action_library_book_copy"
+        sequence="50"
+    />
+
+</odoo>

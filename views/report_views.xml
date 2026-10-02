@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- ===================================================== -->
+    <!-- BÁO CÁO MƯỢN SÁCH -->
+    <!-- ===================================================== -->
+
+    <record id="view_library_loan_report_pivot" model="ir.ui.view">
+        <field name="name">library.loan.report.pivot</field>
+        <field name="model">library.loan</field>
+        <field name="arch" type="xml">
+            <pivot string="Báo cáo mượn sách">
+                <field name="state" type="row"/>
+                <field name="book_id" type="row"/>
+                <field name="checkout_date" interval="month" type="col"/>
+                <field name="id" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+
+    <record id="view_library_loan_report_graph" model="ir.ui.view">
+        <field name="name">library.loan.report.graph</field>
+        <field name="model">library.loan</field>
+        <field name="arch" type="xml">
+            <graph string="Thống kê mượn sách" type="bar">
+                <field name="book_id"/>
+                <field name="id" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+
+    <record id="action_library_loan_report" model="ir.actions.act_window">
+        <field name="name">Báo cáo mượn sách</field>
+        <field name="res_model">library.loan</field>
+        <field name="view_mode">pivot,graph</field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- BÁO CÁO PHẠT -->
+    <!-- ===================================================== -->
+
+    <record id="view_library_fine_report_pivot" model="ir.ui.view">
+        <field name="name">library.fine.report.pivot</field>
+        <field name="model">library.fine</field>
+        <field name="arch" type="xml">
+            <pivot string="Báo cáo phiếu phạt">
+                <field name="state" type="row"/>
+                <field name="reason" type="row"/>
+                <field name="member_id" type="row"/>
+                <field name="amount" type="measure"/>
+                <field name="overdue_days" type="measure"/>
+                <field name="id" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+
+    <record id="view_library_fine_report_graph" model="ir.ui.view">
+        <field name="name">library.fine.report.graph</field>
+        <field name="model">library.fine</field>
+        <field name="arch" type="xml">
+            <graph string="Thống kê tiền phạt" type="bar">
+                <field name="reason"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+
+    <record id="action_library_fine_report" model="ir.actions.act_window">
+        <field name="name">Báo cáo phiếu phạt</field>
+        <field name="res_model">library.fine</field>
+        <field name="view_mode">pivot,graph</field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- MENU BÁO CÁO -->
+    <!-- ===================================================== -->
+
+    <menuitem
+        id="menu_library_reports"
+        name="Báo cáo"
+        parent="menu_library_root"
+        sequence="50"/>
+
+    <menuitem
+        id="menu_library_loan_report"
+        name="Báo cáo mượn sách"
+        parent="menu_library_reports"
+        action="action_library_loan_report"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_library_fine_report"
+        name="Báo cáo phiếu phạt"
+        parent="menu_library_reports"
+        action="action_library_fine_report"
+        sequence="20"/>
+
+</odoo>

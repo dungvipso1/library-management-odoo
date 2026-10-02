@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- Danh sách phiếu mượn -->
+    <record id="view_library_loan_list" model="ir.ui.view">
+        <field name="name">library.loan.list</field>
+        <field name="model">library.loan</field>
+        <field name="arch" type="xml">
+            <list string="Phiếu mượn sách">
+                <field name="name"/>
+                <field name="member_id"/>
+                <field name="book_id"/>
+                <field name="copy_id"/>
+                <field name="checkout_date"/>
+                <field name="due_date"/>
+                <field name="return_date"/>
+                <field name="renewal_count"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Form phiếu mượn -->
+    <record id="view_library_loan_form" model="ir.ui.view">
+        <field name="name">library.loan.form</field>
+        <field name="model">library.loan</field>
+        <field name="arch" type="xml">
+
+            <form string="Phiếu mượn sách">
+
+                <header>
+
+                    <button
+                        name="action_checkout"
+                        type="object"
+                        string="Xác nhận mượn"
+                        class="oe_highlight"
+                        invisible="state != 'draft'"/>
+
+                    <button
+                        name="action_extend"
+                        type="object"
+                        string="Gia hạn 7 ngày"
+                        class="oe_highlight"
+                        invisible="state != 'borrowed'"/>
+
+                    <button
+                        name="action_return"
+                        type="object"
+                        string="Trả sách"
+                        class="oe_highlight"
+                        invisible="state not in ['borrowed', 'overdue']"/>
+
+                    <button
+                        name="action_mark_overdue"
+                        type="object"
+                        string="Đánh dấu quá hạn"
+                        invisible="state != 'borrowed'"/>
+
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,borrowed,returned,overdue"/>
+
+                </header>
+
+                <sheet>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+
+                        <group string="Thông tin mượn">
+                            <field name="member_id"/>
+                            <field
+                                name="copy_id"
+                                domain="[('state', '=', 'available')]"/>
+                            <field
+                                name="book_id"
+                                readonly="1"/>
+                        </group>
+
+                        <group string="Thời gian">
+                            <field name="checkout_date"/>
+                            <field name="due_date"/>
+                            <field name="return_date"/>
+                            <field name="renewal_count"/>
+                        </group>
+
+                    </group>
+
+                    <notebook>
+
+                        <page string="Phiếu phạt">
+                            <field name="fine_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="reason"/>
+                                    <field name="overdue_days"/>
+                                    <field name="amount"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+
+                    </notebook>
+
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <!-- Tìm kiếm -->
+    <record id="view_library_loan_search" model="ir.ui.view">
+        <field name="name">library.loan.search</field>
+        <field name="model">library.loan</field>
+        <field name="arch" type="xml">
+
+            <search string="Tìm kiếm phiếu mượn">
+
+                <field name="name"/>
+                <field name="member_id"/>
+                <field name="book_id"/>
+                <field name="copy_id"/>
+                <field name="state"/>
+
+                <separator/>
+
+                <filter
+                    name="filter_borrowed"
+                    string="Đang mượn"
+                    domain="[('state', '=', 'borrowed')]"/>
+
+                <filter
+                    name="filter_returned"
+                    string="Đã trả"
+                    domain="[('state', '=', 'returned')]"/>
+
+                <filter
+                    name="filter_overdue"
+                    string="Quá hạn"
+                    domain="[('state', '=', 'overdue')]"/>
+
+                <separator/>
+
+                <group string="Nhóm theo">
+
+                    <filter
+                        name="group_member"
+                        string="Độc giả"
+                        context="{'group_by': 'member_id'}"/>
+
+                    <filter
+                        name="group_book"
+                        string="Sách"
+                        context="{'group_by': 'book_id'}"/>
+
+                    <filter
+                        name="group_state"
+                        string="Trạng thái"
+                        context="{'group_by': 'state'}"/>
+
+                </group>
+
+            </search>
+
+        </field>
+    </record>
+
+
+    <!-- Action -->
+    <record id="action_library_loan" model="ir.actions.act_window">
+
+        <field name="name">Phiếu mượn</field>
+
+        <field name="res_model">library.loan</field>
+
+        <field name="view_mode">list,form</field>
+
+        <field name="view_id" ref="view_library_loan_list"/>
+
+        <field
+            name="search_view_id"
+            ref="view_library_loan_search"/>
+
+    </record>
+
+
+    <!-- Menu -->
+    <menuitem
+        id="menu_library_loan"
+        name="Phiếu mượn"
+        parent="menu_library_root"
+        action="action_library_loan"
+        sequence="30"/>
+
+</odoo>

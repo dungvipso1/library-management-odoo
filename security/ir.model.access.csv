@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_library_book_librarian,Quyen thu thu - Sach,model_library_book,library_management.group_library_librarian,1,1,1,1
+access_library_book_viewer,Quyen nguoi xem - Sach,model_library_book,library_management.group_library_viewer,1,0,0,0
+access_library_author_librarian,Quyen thu thu - Tac gia,model_library_author,library_management.group_library_librarian,1,1,1,1
+access_library_author_viewer,Quyen nguoi xem - Tac gia,model_library_author,library_management.group_library_viewer,1,0,0,0
+access_library_publisher_librarian,Quyen thu thu - Nha xuat ban,model_library_publisher,library_management.group_library_librarian,1,1,1,1
+access_library_publisher_viewer,Quyen nguoi xem - Nha xuat ban,model_library_publisher,library_management.group_library_viewer,1,0,0,0
+access_library_category_librarian,Quyen thu thu - The loai,model_library_category,library_management.group_library_librarian,1,1,1,1
+access_library_category_viewer,Quyen nguoi xem - The loai,model_library_category,library_management.group_library_viewer,1,0,0,0
+access_library_book_copy_librarian,Quyen thu thu - Ban sao sach,model_library_book_copy,library_management.group_library_librarian,1,1,1,1
+access_library_book_copy_viewer,Quyen nguoi xem - Ban sao sach,model_library_book_copy,library_management.group_library_viewer,1,0,0,0
+access_library_loan_librarian,Quyen thu thu - Phieu muon,model_library_loan,library_management.group_library_librarian,1,1,1,1
+access_library_loan_viewer,Quyen nguoi xem - Phieu muon,model_library_loan,library_management.group_library_viewer,1,0,0,0
+access_library_fine_librarian,Quyen thu thu - Phieu phat,model_library_fine,library_management.group_library_librarian,1,1,1,1
+access_library_fine_viewer,Quyen nguoi xem - Phieu phat,model_library_fine,library_management.group_library_viewer,1,0,0,0
+access_library_reservation_librarian,Quyen thu thu - Dat truoc,model_library_reservation,library_management.group_library_librarian,1,1,1,1
+access_library_reservation_viewer,Quyen nguoi xem - Dat truoc,model_library_reservation,library_management.group_library_viewer,1,0,0,0

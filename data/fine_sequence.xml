@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <record id="seq_library_fine" model="ir.sequence">
+        <field name="name">Mã phiếu phạt thư viện</field>
+        <field name="code">library.fine</field>
+        <field name="prefix">FP</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+    </record>
+
+</odoo>

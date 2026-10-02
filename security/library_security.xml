@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- ====================================================== -->
+    <!-- NHÓM ỨNG DỤNG: THƯ VIỆN -->
+    <!-- ====================================================== -->
+
+    <record id="module_category_library" model="ir.module.category">
+        <field name="name">Thư viện</field>
+        <field name="sequence">20</field>
+    </record>
+
+
+    <!-- ====================================================== -->
+    <!-- NHÓM NGƯỜI XEM -->
+    <!-- ====================================================== -->
+
+    <record id="group_library_viewer" model="res.groups">
+        <field name="name">Người xem</field>
+        <field name="category_id" ref="module_category_library"/>
+    </record>
+
+
+    <!-- ====================================================== -->
+    <!-- NHÓM THỦ THƯ -->
+    <!-- Thủ thư kế thừa Người xem -->
+    <!-- ====================================================== -->
+
+    <record id="group_library_librarian" model="res.groups">
+        <field name="name">Thủ thư</field>
+        <field name="category_id" ref="module_category_library"/>
+        <field name="implied_ids" eval="[(4, ref('group_library_viewer'))]"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <template
+        id="library_dashboard"
+        name="Thư viện - Dashboard"
+    >
+
+        <t t-call="website.layout">
+
+            <div id="wrap">
+
+                <section class="py-5 bg-light">
+
+                    <div class="container">
+
+                        <div class="text-center mb-5">
+
+                            <h1 class="display-5 fw-bold">
+                                Dashboard thư viện
+                            </h1>
+
+                            <p class="lead text-muted">
+                                Tổng quan hoạt động thư viện
+                            </p>
+
+                        </div>
+
+                        <div class="row g-4">
+
+                            <div class="col-12 col-md-6 col-lg">
+
+                                <div class="card h-100 shadow-sm text-center">
+
+                                    <div class="card-body py-4">
+
+                                        <h6 class="text-muted">
+                                            Tổng số sách
+                                        </h6>
+
+                                        <h2 class="display-6 fw-bold">
+                                            <t t-out="total_books"/>
+                                        </h2>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-12 col-md-6 col-lg">
+
+                                <div class="card h-100 shadow-sm text-center">
+
+                                    <div class="card-body py-4">
+
+                                        <h6 class="text-muted">
+                                            Tổng số bản sao
+                                        </h6>
+
+                                        <h2 class="display-6 fw-bold">
+                                            <t t-out="total_copies"/>
+                                        </h2>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-12 col-md-6 col-lg">
+
+                                <div class="card h-100 shadow-sm text-center">
+
+                                    <div class="card-body py-4">
+
+                                        <h6 class="text-muted">
+                                            Đang được mượn
+                                        </h6>
+
+                                        <h2 class="display-6 fw-bold">
+                                            <t t-out="borrowed_copies"/>
+                                        </h2>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-12 col-md-6 col-lg">
+
+                                <div class="card h-100 shadow-sm text-center">
+
+                                    <div class="card-body py-4">
+
+                                        <h6 class="text-muted">
+                                            Phiếu quá hạn
+                                        </h6>
+
+                                        <h2 class="display-6 fw-bold text-danger">
+                                            <t t-out="overdue_loans"/>
+                                        </h2>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-12 col-md-6 col-lg">
+
+                                <div class="card h-100 shadow-sm text-center">
+
+                                    <div class="card-body py-4">
+
+                                        <h6 class="text-muted">
+                                            Độc giả
+                                        </h6>
+
+                                        <h2 class="display-6 fw-bold">
+                                            <t t-out="total_members"/>
+                                        </h2>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="text-center mt-5">
+
+                            <a
+                                href="/library"
+                                class="btn btn-primary me-2"
+                            >
+                                Tra cứu sách
+                            </a>
+
+                            <a
+                                href="/my/loans"
+                                class="btn btn-outline-primary"
+                            >
+                                Sách tôi đang mượn
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </t>
+
+    </template>
+
+</odoo>

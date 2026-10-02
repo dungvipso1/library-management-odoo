@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- ===================================================== -->
+    <!-- DANH SÁCH ĐẶT TRƯỚC -->
+    <!-- ===================================================== -->
+
+    <record id="view_library_reservation_list" model="ir.ui.view">
+        <field name="name">library.reservation.list</field>
+        <field name="model">library.reservation</field>
+
+        <field name="arch" type="xml">
+            <list string="Đặt trước sách">
+
+                <field name="name"/>
+                <field name="member_id"/>
+                <field name="book_id"/>
+                <field name="reserve_date"/>
+                <field name="state"/>
+
+            </list>
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- FORM ĐẶT TRƯỚC -->
+    <!-- ===================================================== -->
+
+    <record id="view_library_reservation_form" model="ir.ui.view">
+        <field name="name">library.reservation.form</field>
+        <field name="model">library.reservation</field>
+
+        <field name="arch" type="xml">
+
+            <form string="Đặt trước sách">
+
+                <header>
+
+                    <button
+                        name="action_mark_ready"
+                        type="object"
+                        string="Sẵn sàng"
+                        class="oe_highlight"
+                        invisible="state != 'pending'"
+                    />
+
+                    <button
+                        name="action_mark_done"
+                        type="object"
+                        string="Hoàn thành"
+                        class="oe_highlight"
+                        invisible="state != 'ready'"
+                    />
+
+                    <button
+                        name="action_cancel"
+                        type="object"
+                        string="Hủy"
+                        invisible="state in ['done', 'cancelled']"
+                    />
+
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="pending,ready,done,cancelled"
+                    />
+
+                </header>
+
+
+                <sheet>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+
+
+                    <group>
+
+                        <group string="Thông tin đặt trước">
+
+                            <field name="member_id"/>
+
+                            <field name="book_id"/>
+
+                            <field name="reserve_date"/>
+
+                        </group>
+
+
+                        <group string="Trạng thái">
+
+                            <field name="state"/>
+
+                        </group>
+
+                    </group>
+
+
+                    <group string="Ghi chú">
+
+                        <field name="note"/>
+
+                    </group>
+
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- TÌM KIẾM -->
+    <!-- ===================================================== -->
+
+    <record id="view_library_reservation_search" model="ir.ui.view">
+
+        <field name="name">library.reservation.search</field>
+
+        <field name="model">library.reservation</field>
+
+        <field name="arch" type="xml">
+
+            <search string="Tìm kiếm đặt trước">
+
+                <field name="name"/>
+                <field name="member_id"/>
+                <field name="book_id"/>
+                <field name="reserve_date"/>
+                <field name="state"/>
+
+                <separator/>
+
+                <filter
+                    name="filter_pending"
+                    string="Chờ xử lý"
+                    domain="[('state', '=', 'pending')]"
+                />
+
+                <filter
+                    name="filter_ready"
+                    string="Sẵn sàng"
+                    domain="[('state', '=', 'ready')]"
+                />
+
+                <filter
+                    name="filter_done"
+                    string="Đã hoàn thành"
+                    domain="[('state', '=', 'done')]"
+                />
+
+                <filter
+                    name="filter_cancelled"
+                    string="Đã hủy"
+                    domain="[('state', '=', 'cancelled')]"
+                />
+
+                <separator/>
+
+                <group string="Nhóm theo">
+
+                    <filter
+                        name="group_member"
+                        string="Độc giả"
+                        context="{'group_by': 'member_id'}"
+                    />
+
+                    <filter
+                        name="group_book"
+                        string="Sách"
+                        context="{'group_by': 'book_id'}"
+                    />
+
+                    <filter
+                        name="group_state"
+                        string="Trạng thái"
+                        context="{'group_by': 'state'}"
+                    />
+
+                </group>
+
+            </search>
+
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- ACTION -->
+    <!-- ===================================================== -->
+
+    <record
+        id="action_library_reservation"
+        model="ir.actions.act_window"
+    >
+
+        <field name="name">Đặt trước sách</field>
+
+        <field name="res_model">library.reservation</field>
+
+        <field name="view_mode">list,form</field>
+
+        <field
+            name="view_id"
+            ref="view_library_reservation_list"
+        />
+
+        <field
+            name="search_view_id"
+            ref="view_library_reservation_search"
+        />
+
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- MENU -->
+    <!-- ===================================================== -->
+
+    <menuitem
+        id="menu_library_reservation"
+        name="Đặt trước sách"
+        parent="menu_library_root"
+        action="action_library_reservation"
+        sequence="45"
+    />
+
+</odoo>

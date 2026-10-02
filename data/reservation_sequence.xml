@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <record id="seq_library_reservation" model="ir.sequence">
+        <field name="name">Mã đặt trước thư viện</field>
+        <field name="code">library.reservation</field>
+        <field name="prefix">DT</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+    </record>
+
+</odoo>

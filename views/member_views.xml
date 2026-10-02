@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- Danh sách độc giả -->
+    <record id="view_library_member_list" model="ir.ui.view">
+        <field name="name">library.member.list</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <list string="Độc giả">
+                <field name="member_code"/>
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="member_date"/>
+                <field name="is_library_member"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Form độc giả -->
+    <record id="view_library_member_form" model="ir.ui.view">
+        <field name="name">library.member.form</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <form string="Độc giả">
+                <sheet>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"
+                                   placeholder="Tên độc giả"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Thông tin độc giả">
+                            <field name="member_code"/>
+                            <field name="member_date"/>
+                            <field name="is_library_member"/>
+                        </group>
+
+                        <group string="Thông tin liên hệ">
+                            <field name="phone"/>
+                            <field name="email"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Địa chỉ">
+                            <group>
+                                <field name="street"/>
+                                <field name="street2"/>
+                                <field name="city"/>
+                                <field name="zip"/>
+                            </group>
+                        </page>
+
+                        <page string="Ghi chú">
+                            <field name="member_note"/>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Tìm kiếm độc giả -->
+    <record id="view_library_member_search" model="ir.ui.view">
+        <field name="name">library.member.search</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <search string="Tìm kiếm độc giả">
+                <field name="name"/>
+                <field name="member_code"/>
+                <field name="phone"/>
+                <field name="email"/>
+
+                <separator/>
+
+                <filter name="library_member"
+                        string="Độc giả thư viện"
+                        domain="[('is_library_member', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- Action -->
+    <record id="action_library_member" model="ir.actions.act_window">
+        <field name="name">Độc giả</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_library_member', '=', True)]</field>
+        <field name="context">
+            {'default_is_library_member': True}
+        </field>
+        <field name="view_id" ref="view_library_member_list"/>
+        <field name="search_view_id" ref="view_library_member_search"/>
+    </record>
+
+
+    <!-- Menu -->
+    <menuitem
+        id="menu_library_member"
+        name="Độc giả"
+        parent="menu_library_root"
+        action="action_library_member"
+        sequence="20"/>
+
+</odoo>
