@@ -96,7 +96,9 @@ class LibraryWebsiteController(http.Controller):
             )
 
         try:
-            request.env['library.reservation'].create(
+            # SỬA: thêm sudo() vì user Portal không có quyền tạo đặt trước.
+            # member_id luôn là partner của người đang đăng nhập.
+            request.env['library.reservation'].sudo().create(
                 {
                     'member_id': partner.id,
                     'book_id': book.id,
@@ -124,7 +126,10 @@ class LibraryWebsiteController(http.Controller):
     def my_library_loans(self, **kwargs):
         partner = request.env.user.partner_id
 
-        loans = request.env['library.loan'].search(
+        # SỬA: thêm sudo() để Portal đọc được phiếu mượn.
+        # Vẫn lọc cứng theo member_id = partner đang đăng nhập,
+        # nên mỗi người chỉ thấy phiếu của chính mình.
+        loans = request.env['library.loan'].sudo().search(
             [
                 ('member_id', '=', partner.id),
             ],

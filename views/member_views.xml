@@ -2,7 +2,10 @@
 
 <odoo>
 
-    <!-- Danh sách độc giả -->
+    <!-- ================================================== -->
+    <!-- DANH SÁCH ĐỘC GIẢ -->
+    <!-- ================================================== -->
+
     <record id="view_library_member_list" model="ir.ui.view">
         <field name="name">library.member.list</field>
         <field name="model">res.partner</field>
@@ -19,12 +22,17 @@
     </record>
 
 
-    <!-- Form độc giả -->
+    <!-- ================================================== -->
+    <!-- FORM THÔNG TIN ĐỘC GIẢ -->
+    <!-- ================================================== -->
+
     <record id="view_library_member_form" model="ir.ui.view">
         <field name="name">library.member.form</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
-            <form string="Độc giả">
+
+            <form string="Thông tin độc giả">
+
                 <sheet>
 
                     <div class="oe_title">
@@ -35,7 +43,8 @@
                     </div>
 
                     <group>
-                        <group string="Thông tin độc giả">
+
+                        <group string="Thông tin thư viện">
                             <field name="member_code"/>
                             <field name="member_date"/>
                             <field name="is_library_member"/>
@@ -43,37 +52,52 @@
 
                         <group string="Thông tin liên hệ">
                             <field name="phone"/>
+                            <field name="mobile"/>
                             <field name="email"/>
                         </group>
+
                     </group>
 
                     <notebook>
+
                         <page string="Địa chỉ">
                             <group>
                                 <field name="street"/>
                                 <field name="street2"/>
                                 <field name="city"/>
                                 <field name="zip"/>
+                                <field name="country_id"/>
                             </group>
                         </page>
 
-                        <page string="Ghi chú">
-                            <field name="member_note"/>
+                        <page string="Ghi chú độc giả">
+                            <field name="member_note"
+                                   placeholder="Nhập ghi chú về độc giả..."/>
                         </page>
+
                     </notebook>
 
                 </sheet>
+
+                <chatter/>
+
             </form>
+
         </field>
     </record>
 
 
-    <!-- Tìm kiếm độc giả -->
+    <!-- ================================================== -->
+    <!-- TÌM KIẾM ĐỘC GIẢ -->
+    <!-- ================================================== -->
+
     <record id="view_library_member_search" model="ir.ui.view">
         <field name="name">library.member.search</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
+
             <search string="Tìm kiếm độc giả">
+
                 <field name="name"/>
                 <field name="member_code"/>
                 <field name="phone"/>
@@ -81,34 +105,78 @@
 
                 <separator/>
 
-                <filter name="library_member"
-                        string="Độc giả thư viện"
-                        domain="[('is_library_member', '=', True)]"/>
+                <filter
+                    name="library_member"
+                    string="Độc giả thư viện"
+                    domain="[('is_library_member', '=', True)]"
+                />
+
             </search>
+
         </field>
     </record>
 
 
-    <!-- Action -->
+    <!-- ================================================== -->
+    <!-- ACTION ĐỘC GIẢ -->
+    <!-- ================================================== -->
+
     <record id="action_library_member" model="ir.actions.act_window">
+
         <field name="name">Độc giả</field>
         <field name="res_model">res.partner</field>
         <field name="view_mode">list,form</field>
-        <field name="domain">[('is_library_member', '=', True)]</field>
+
+        <field name="domain">
+            [('is_library_member', '=', True)]
+        </field>
+
         <field name="context">
             {'default_is_library_member': True}
         </field>
-        <field name="view_id" ref="view_library_member_list"/>
-        <field name="search_view_id" ref="view_library_member_search"/>
+
+        <field name="search_view_id"
+               ref="view_library_member_search"/>
+
     </record>
 
 
-    <!-- Menu -->
+    <!-- ================================================== -->
+    <!-- GẮN VIEW DANH SÁCH VÀ FORM VÀO ACTION -->
+    <!-- ================================================== -->
+
+    <record id="action_library_member_list_view"
+            model="ir.actions.act_window.view">
+
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_library_member_list"/>
+        <field name="act_window_id" ref="action_library_member"/>
+
+    </record>
+
+
+    <record id="action_library_member_form_view"
+            model="ir.actions.act_window.view">
+
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_library_member_form"/>
+        <field name="act_window_id" ref="action_library_member"/>
+
+    </record>
+
+
+    <!-- ================================================== -->
+    <!-- MENU ĐỘC GIẢ -->
+    <!-- ================================================== -->
+
     <menuitem
         id="menu_library_member"
         name="Độc giả"
         parent="menu_library_root"
         action="action_library_member"
-        sequence="20"/>
+        sequence="20"
+    />
 
 </odoo>

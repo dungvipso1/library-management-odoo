@@ -17,21 +17,26 @@
     ],
 
     'data': [
+        # Mã tự động
         'data/loan_sequence.xml',
         'data/fine_sequence.xml',
         'data/library_cron.xml',
         'data/reservation_sequence.xml',
 
+        # Bảo mật và phân quyền
         'security/library_security.xml',
         'security/ir.model.access.csv',
 
+        # Giao diện quản trị
         'views/library_book_views.xml',
         'views/member_views.xml',
         'views/loan_views.xml',
         'views/fine_views.xml',
         'views/report_views.xml',
-        'views/website_templates.xml',
         'views/reservation_views.xml',
+
+        # Website
+        'views/website_templates.xml',
         'views/dashboard_templates.xml',
     ],
 
