@@ -95,16 +95,38 @@ class LibraryWebsiteController(http.Controller):
                 % book.id
             )
 
-        try:
-            # SỬA: thêm sudo() vì user Portal không có quyền tạo đặt trước.
-            # member_id luôn là partner của người đang đăng nhập.
-            request.env['library.reservation'].sudo().create(
-                {
-                    'member_id': partner.id,
-                    'book_id': book.id,
-                    'note': 'Đặt trước từ website thư viện.',
-                }
+        Reservation = request.env['library.reservation'].sudo()
+
+        # SỬA: kiểm tra trùng TRƯỚC khi tạo, để không ghi bản ghi trùng
+        # vào cơ sở dữ liệu rồi mới báo lỗi.
+        existing = Reservation.search(
+            [
+                ('member_id', '=', partner.id),
+                ('book_id', '=', book.id),
+                ('state', '=', 'pending'),
+            ],
+            limit=1,
+        )
+
+        if existing:
+            return request.redirect(
+                '/library/book/%s?reservation_message='
+                'Độc giả này đã có một yêu cầu đặt trước '
+                'đang chờ xử lý cho sách này.'
+                % book.id
             )
+
+        try:
+            # SỬA: savepoint để nếu có lỗi bất kỳ thì bản ghi vừa ghi
+            # được hoàn tác, không bị lưu lại khi kết thúc yêu cầu.
+            with request.env.cr.savepoint():
+                Reservation.create(
+                    {
+                        'member_id': partner.id,
+                        'book_id': book.id,
+                        'note': 'Đặt trước từ website thư viện.',
+                    }
+                )
         except ValidationError as error:
             return request.redirect(
                 '/library/book/%s?reservation_message=%s'
@@ -126,9 +148,8 @@ class LibraryWebsiteController(http.Controller):
     def my_library_loans(self, **kwargs):
         partner = request.env.user.partner_id
 
-        # SỬA: thêm sudo() để Portal đọc được phiếu mượn.
-        # Vẫn lọc cứng theo member_id = partner đang đăng nhập,
-        # nên mỗi người chỉ thấy phiếu của chính mình.
+        # sudo() để Portal đọc được phiếu mượn, nhưng luôn lọc cứng
+        # theo member_id = partner đang đăng nhập.
         loans = request.env['library.loan'].sudo().search(
             [
                 ('member_id', '=', partner.id),
